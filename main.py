@@ -14,7 +14,7 @@ __date__ = "2024/11/29 (Created: 2024/11/22)"
 import argparse
 import sys
 
-from lib.predict import image, movie, realtime
+from instance_segmentation.predict import image, movie, realtime
 
 
 def parse_args() -> argparse.Namespace:

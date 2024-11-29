@@ -1,3 +1,3 @@
-# image-segmentation
+# instance-segmentation
 
-This repository contains the code for the image segmentation project.
+This repository contains the code for the instance segmentation project.
