@@ -14,4 +14,6 @@ runs/
 
 yolo*
 
-bus.jpg
+*.mp4
+*.jpg
+*.png
