@@ -5,35 +5,40 @@ import cv2
 from ultralytics import YOLO
 
 
-def image(path: str):
-    # Load a model
+def image(path: str) -> int:
+    """image segmentation
+
+    Args:
+        path (str): path to the image file
+
+    Returns:
+        int: 0 if successful, 1 if error occurs
+    """
     model = YOLO("yolo11n-seg.pt")
 
-    image_path = path
-    # image = "https://ultralytics.com/images/bus.jpg"
-
-    results = model(image_path)
-
-    print(results[0])
-
-    # results[0].show()
+    results = model(path)
+    results[0].show()
 
     return 0
 
 
-def movie(path: str):
-    # Load a model
+def movie(path: str) -> int:
+    """movie segmentation
+
+    Args:
+        path (str): path to the movie file
+
+    Returns:
+        int: 0 if successful, 1 if error occurs
+    """
+
     model = YOLO("yolo11n-seg.pt")
 
-    # Open the video file
-    video_path = path
-    cap = cv2.VideoCapture(video_path)
-
+    cap = cv2.VideoCapture(path)
     if not cap.isOpened():
-        print(f"Error: Could not open video {video_path}")
+        print(f"Error: Could not open video {path}")
         return 1
 
-    # Get video properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -48,17 +53,48 @@ def movie(path: str):
             if not ret:
                 break
 
-            # Perform object detection on the frame
             results = model(frame)
 
-            # Get the annotated frame
             annotated_frame = results[0].plot()
 
-            # Write the frame to the output video
             out.write(annotated_frame)
     finally:
         cap.release()
         out.release()
+        cv2.destroyAllWindows()
+
+
+def realtime() -> int:
+    """real-time image segmentation
+
+    Returns:
+        int: 0 if successful, 1 if error occurs
+    """
+    model = YOLO("yolo11n-seg.pt")
+
+    # Open the camera stream (0 is usually the default camera)
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Could not open camera")
+        return 1
+
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            results = model(frame)
+
+            annotated_frame = results[0].plot()
+
+            cv2.imshow("Real-time Instance Segmentation(Quit by 'q')", annotated_frame)
+
+            # Break the loop if 'q' is pressed
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+    finally:
+        cap.release()
         cv2.destroyAllWindows()
 
     return 0
