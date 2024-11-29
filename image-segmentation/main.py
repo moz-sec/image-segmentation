@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# ruff: noqa: F401
 
 """
 image-segmentation：performs image recognition with AI
@@ -15,8 +16,8 @@ from lib.predict import image, movie
 
 
 def main():
-    image("../sample/sample.jpg")
-    movie("../sample/sample.mp4")
+    # image("../sample/sample.jpg")
+    # movie("../sample/sample.mp4")
 
     return 0
 
