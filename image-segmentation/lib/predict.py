@@ -5,11 +5,12 @@ import cv2
 from ultralytics import YOLO
 
 
-def image(path: str) -> int:
+def image(path: str, boxes: bool) -> int:
     """image segmentation
 
     Args:
         path (str): path to the image file
+        boxes (bool): draw bounding boxes on detected objects
 
     Returns:
         int: 0 if successful, 1 if error occurs
@@ -17,16 +18,17 @@ def image(path: str) -> int:
     model = YOLO("yolo11n-seg.pt")
 
     results = model(path)
-    results[0].show()
+    results[0].show(boxes=boxes)
 
     return 0
 
 
-def movie(path: str) -> int:
+def movie(path: str, boxes: bool) -> int:
     """movie segmentation
 
     Args:
         path (str): path to the movie file
+        boxes (bool): draw bounding boxes on detected objects
 
     Returns:
         int: 0 if successful, 1 if error occurs
@@ -55,7 +57,7 @@ def movie(path: str) -> int:
 
             results = model(frame)
 
-            annotated_frame = results[0].plot()
+            annotated_frame = results[0].plot(boxes=boxes)
 
             out.write(annotated_frame)
     finally:
@@ -64,13 +66,16 @@ def movie(path: str) -> int:
         cv2.destroyAllWindows()
 
 
-def realtime() -> int:
+def realtime(boxes: bool) -> int:
     """real-time image segmentation
+
+    Args:
+        boxes (bool): draw bounding boxes on detected objects
 
     Returns:
         int: 0 if successful, 1 if error occurs
     """
-    model = YOLO("yolo11n-seg.pt")
+    model = YOLO("yolo11n-seg.pt", task="segment")
 
     # Open the camera stream (0 is usually the default camera)
     cap = cv2.VideoCapture(0)
@@ -86,7 +91,7 @@ def realtime() -> int:
 
             results = model(frame)
 
-            annotated_frame = results[0].plot()
+            annotated_frame = results[0].plot(boxes=boxes)
 
             cv2.imshow("Real-time Instance Segmentation(Quit by 'q')", annotated_frame)
 
