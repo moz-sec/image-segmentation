@@ -18,7 +18,15 @@ def image(path: str, boxes: bool) -> int:
     model = YOLO("yolo11n-seg.pt")
 
     results = model(path)
-    results[0].show(boxes=boxes)
+    # results[0].show(boxes=boxes)
+
+    annotated_image = results[0].plot(boxes=boxes)
+
+    concatenated_image = cv2.hconcat([cv2.imread(path), annotated_image])
+
+    cv2.imshow("Image Segmentation(Quit by '0')", concatenated_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     return 0
 
@@ -45,8 +53,9 @@ def movie(path: str, boxes: bool) -> int:
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = cap.get(cv2.CAP_PROP_FPS)
 
+    output_file = "output.mp4"
     out = cv2.VideoWriter(
-        "output.mp4", cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height)
+        output_file, cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height)
     )
 
     try:
@@ -64,6 +73,8 @@ def movie(path: str, boxes: bool) -> int:
         cap.release()
         out.release()
         cv2.destroyAllWindows()
+
+    return output_file
 
 
 def realtime(boxes: bool) -> int:

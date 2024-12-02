@@ -12,6 +12,7 @@ __version__ = "0.1.0"
 __date__ = "2024/11/29 (Created: 2024/11/22)"
 
 import argparse
+import subprocess
 import sys
 
 from instance_segmentation.predict import image, movie, realtime
@@ -65,7 +66,10 @@ def main():
         if not args.path:
             print("Error: --path is required for movie mode")
             return 1
-        movie(args.path, args.boxes)
+        output = movie(args.path, args.boxes)
+        print(output)
+        subprocess.run(["open", "-a", "Preview", args.path])
+        subprocess.run(["open", "-a", "QuickTime Player", output])
     elif args.mode == "realtime":
         realtime(args.boxes)
 
